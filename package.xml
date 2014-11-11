@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <package>
-  <name>tts_speech</name>
-  <version>0.0.0</version>
-  <description>The tts_speech package</description>
+  <name>itf_talk</name>
+  <version>0.0.2</version>
+  <description>The itf_talk package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="alex@todo.todo">alex</maintainer>
+  <maintainer email="alex@yutani.nl">Alex van der Peet</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
