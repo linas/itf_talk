@@ -15,7 +15,7 @@ from SoundFile import SoundFile
 class ITFTalker(Thread):
     NODE_NAME = 'itf_talker'
     pub = rospy.Publisher('itf_next_sentence', String, queue_size=1)
-    pub_speech_strength = rospy.Publisher('/dmitry/jaw_controller/command', Float64, queue_size=1)
+    pub_speech_strength = rospy.Publisher('speech_strength', Float64, queue_size=1)
     pub_speech_active = rospy.Publisher('speech_active', Bool, queue_size=1)
     soundfile = None
     rms_params = {"scale": 1.0/5000, "min": 0.0, "max": 1.0}
@@ -26,7 +26,7 @@ class ITFTalker(Thread):
     def __init__(self):
         Thread.__init__(self)
         rospy.init_node(ITFTalker.NODE_NAME, log_level=rospy.INFO)
-        rospy.Subscriber("chatbot_responses", String, self.callback)
+        rospy.Subscriber("itf_talk", String, self.callback)
         rospy.Subscriber("itf_talk_stop", String, self.callback_stop)
 
         pyglet.clock._get_sleep_time = pyglet.clock.get_sleep_time
@@ -113,11 +113,10 @@ class ITFTalker(Thread):
         ITFTalker.pub_speech_active.publish(True)
 
         for index, section in enumerate(phraseSections):
-            fileName = 'tts' + str(index).zfill(index)
-
-            fileName = fileName + '.wav'
             if (not self.stop_request_received):
-
+                fileName = 'tts' + str(index).zfill(index)
+                fileName = fileName + '.wav'
+                print 'Calling SoundPlayer with parameter ' + fileName
                 self.play(fileName)
 
                 if not (self.soundfile is None):
@@ -148,7 +147,6 @@ class ITFTalker(Thread):
         jaw_coeff = min(max(math.sqrt(rms * p["scale"]), p["min"]), p["max"])
 
         if jaw_coeff > 0:
-            jaw_coeff = jaw_coeff*0.4-0.15;
             self.pub_speech_strength.publish(jaw_coeff)
             self.jaw_inactive = False
         else:
@@ -189,7 +187,7 @@ if __name__ == '__main__':
     talker = ITFTalker()
 
     talker.start()
-    rospy.loginfo("{0} started, listening for text input on topic chatbot_repsonses...".format(ITFTalker.NODE_NAME))
+    rospy.loginfo("{0} started, listening for text input on topic itf_talk...".format(ITFTalker.NODE_NAME))
 
     rospy.spin()
 
